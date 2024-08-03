@@ -69,6 +69,39 @@ class MusicBot(commands.Cog):
           await ctx.send("Lied übersprungen!")
 
 
+    @commands.hybrid_command(name="pause", description="Pausiert das AKutelle Lied")
+    async def pause(self, ctx: commands.Context):
+       if ctx.voice_client:
+          if ctx.voice_client.is_paused():
+             await ctx.send("Wiedergabe ist bereits pausiert!", ephemeral=True)
+
+          elif ctx.voice_client.is_playing():
+             ctx.voice_client.pause()
+             await ctx.send("Wiedergabe Pausiert")
+          else:
+              await ctx.send("Es wird gerade nichts abgespielt", ephemeral=True)
+
+
+    @commands.hybrid_command(name="resume", description="Setzt das aktuelle Lied fort")
+    async def resume(self, ctx:commands.Context):
+       if ctx.voice_client:
+          if ctx.voice_client.is_paused():
+             ctx.voice_client.resume()
+             await ctx.send("Wiedergabe fortgesetzt")
+          elif ctx.voice_client.is_playing():
+              await ctx.send("Die Wiedergabe läuft bereits!", ephemeral=True)
+          else:
+             await ctx.send("Es wird gerade nichts abgespielt", ephemeral=True)
+
+    @commands.hybrid_command(name="loop", description="Schaltet den Loop modus ein/aus")
+    async def loop(self, ctx: commands.Context):
+      self.loop = not self.loop
+      if self.loop:
+         await ctx.send("Loop Modus Aktiviert")
+      else:
+         await ctx.send("Loop Modus deaktiviert!")
+
+
 client = commands.Bot(command_prefix="!", intents=intents)
 
 @client.event
@@ -77,6 +110,6 @@ async def on_ready():
    print("Bot ist Bereit")
 async def main():
    await client.add_cog(MusicBot(client))
-   await client.start('DEIN TOKEN HIER')
+   await client.start('DEIN BOT TOKEN HIER')
 
 asyncio.run(main())
